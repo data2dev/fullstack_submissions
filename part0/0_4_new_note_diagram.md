@@ -9,7 +9,7 @@ sequenceDiagram
     deactivate server
 
     Note right of browser: The browser sends the Data as the body of the POST request.
-    Note left of server: The server can access the data by accessing the req.body field of the request object req. The server creates a new note object, and adds it to an array called notes.
+    Note left of server: The server creates a new note object, and adds the data to an array called notes.
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes (reload)
     activate server
