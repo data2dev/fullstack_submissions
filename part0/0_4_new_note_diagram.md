@@ -4,9 +4,7 @@ sequenceDiagram
     participant server
 
     browser->>server: user input in the 'form element' sent to server through HTTP POST request
-    Data is sent as the body of the POST request.
     activate server
-    The server creates a new note object, and adds it to an array called notes.
     server-->>browser: HTTP status code 302: URL redirect instructions
     deactivate server
 
