@@ -4,7 +4,7 @@ sequenceDiagram
     participant server
 
     browser->>server: get HTML page request
-    Note right of browser: The browser sends the Data as the body of the POST request.
+
     activate server
     server-->>browser: HTML page fetched from the server
     deactivate server
