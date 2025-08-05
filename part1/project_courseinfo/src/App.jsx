@@ -12,13 +12,13 @@ const Part = ({ name, exercises }) => {
 
 // Content component 
 // to be used in App
-const Content = ({part, exercises}) => {
-  return (
-    <div>
-      <Part name={part} exercises={exercises} />
-    </div>
-  )
-}
+const Content = ({ parts }) => (
+  <div>
+    {parts.map((part, index) => (
+      <Part key={index} name={part.name} exercises={part.exercises} />
+    ))}
+  </div>
+)
 
 // Total component 
 // to be used in App
