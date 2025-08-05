@@ -1,21 +1,27 @@
 // Header component 
-// to process course name
+// to be used in App
 const Header = ({ course }) => {
   return <h1>{course}</h1>
 }
 
+// Part component
+// to be used in Content
+const Part = ({ name, exercises }) => {
+  return <p>{name} {exercises}</p>
+}
+
 // Content component 
-// to process parts and their exercises
-const Content = ({ part, exercises}) => {
+// to be used in App
+const Content = ({part, exercises}) => {
   return (
     <div>
-      <p>{part} {exercises}</p>
+      <Part name={part} exercises={exercises} />
     </div>
   )
 }
 
 // Total component 
-// to process the total number of exercises
+// to be used in App
 const Total = ({ exercises1, exercises2, exercises3 }) => {
   const totalExercises = exercises1 + exercises2 + exercises3
   return <p>Number of exercises {totalExercises}</p>
@@ -41,7 +47,7 @@ const App = () => {
       <Content part={part3} exercises={exercises3} />
 
       <Total exercises1={exercises1} exercises2={exercises2} exercises3={exercises3} />
-      
+
     </div>
   )
 }
