@@ -13,19 +13,31 @@ const App = () => {
   ]
 
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
 
-  // Function to select a random anecdote
-  const handleClick = () => {
+  // Select a random anecdote
+  const handleNext = () => {
     const randomIndex = Math.floor(Math.random() * anecdotes.length)
     setSelected(randomIndex)
   }
 
+  // Vote for the current anecdote
+  const handleVote = () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    setVotes(copy)
+  }
+
   return (
     <div>
+      <h2>Anecdote of the day</h2>
       <p>{anecdotes[selected]}</p>
-      <button onClick={handleClick}>Show Random Anecdote</button>
+      <p>has {votes[selected]} vote(s)</p>
+      <button onClick={handleVote}>Vote</button>
+      <button onClick={handleNext}>Show Random Anecdote</button>
     </div>
   )
 }
+
 
 export default App
