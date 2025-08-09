@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 // Filter component
 const Filter = ({ filter, handleFilterChange }) => (
@@ -39,20 +40,25 @@ const Persons = ({ persons }) => (
   </ul>
 )
 
-
-// Root App component
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-1234567' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' }
-  ])
-
+  const [persons, setPersons] = useState([]) // initially empty
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
-  // Event handlers
+  // Fetch persons from server on mount 
+  // using axios here
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error)
+      })
+  }, [])
+
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumberChange = (event) => setNewNumber(event.target.value)
   const handleFilterChange = (event) => setFilter(event.target.value)
@@ -75,7 +81,6 @@ const App = () => {
     setNewNumber('')
   }
 
-  // Filtered list
   const personsToShow = persons.filter(person =>
     person.name.toLowerCase().includes(filter.toLowerCase())
   )
