@@ -64,22 +64,31 @@ const App = () => {
   const handleFilterChange = (event) => setFilter(event.target.value)
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+  event.preventDefault()
 
-    const nameExists = persons.some(
-      person => person.name.toLowerCase() === newName.toLowerCase()
-    )
+  const nameExists = persons.some(
+    person => person.name.toLowerCase() === newName.toLowerCase()
+  )
 
-    if (nameExists) {
-      alert(`${newName} is already added to the phonebook`)
-      return
-    }
-
-    const newPerson = { name: newName, number: newNumber }
-    setPersons(persons.concat(newPerson))
-    setNewName('')
-    setNewNumber('')
+  if (nameExists) {
+    alert(`${newName} is already added to the phonebook`)
+    return
   }
+
+  const newPerson = { name: newName, number: newNumber }
+
+  axios
+    .post('http://localhost:3001/persons', newPerson)
+    .then(response => {
+      setPersons(persons.concat(response.data))
+      setNewName('')
+      setNewNumber('')
+    })
+    .catch(error => {
+      console.error('Error saving to server:', error)
+    })
+}
+
 
   const personsToShow = persons.filter(person =>
     person.name.toLowerCase().includes(filter.toLowerCase())
