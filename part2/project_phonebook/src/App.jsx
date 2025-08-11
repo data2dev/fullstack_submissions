@@ -31,11 +31,12 @@ const PersonForm = ({
 )
 
 // Persons component
-const Persons = ({ persons }) => (
+const Persons = ({ persons, handleDelete }) => (
   <ul>
-    {persons.map((person) => (
+    {persons.map(person => (
       <li key={person.id}>
         {person.name} — {person.number}
+        <button onClick={() => handleDelete(person.id, person.name)}>Delete</button>
       </li>
     ))}
   </ul>
@@ -89,6 +90,21 @@ const App = () => {
       })
   }
 
+  const handleDelete = (id, name) => {
+    const confirmDelete = window.confirm(`Delete ${name}?`)
+    if (confirmDelete) {
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
+        .catch(error => {
+          alert(`Error deleting ${name}. It may have already been removed.`)
+          console.error('Error deleting person:', error)
+        })
+    }
+  }
+
   const personsToShow = persons.filter(person =>
     person.name.toLowerCase().includes(filter.toLowerCase())
   )
@@ -111,7 +127,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} handleDelete={handleDelete} />
     </div>
   )
 }
