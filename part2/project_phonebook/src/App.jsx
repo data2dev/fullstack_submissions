@@ -1,5 +1,6 @@
+// src/App.js
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 // Filter component
 const Filter = ({ filter, handleFilterChange }) => (
@@ -32,8 +33,8 @@ const PersonForm = ({
 // Persons component
 const Persons = ({ persons }) => (
   <ul>
-    {persons.map((person, index) => (
-      <li key={index}>
+    {persons.map((person) => (
+      <li key={person.id}>
         {person.name} — {person.number}
       </li>
     ))}
@@ -41,18 +42,17 @@ const Persons = ({ persons }) => (
 )
 
 const App = () => {
-  const [persons, setPersons] = useState([]) // initially empty
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
-  // Fetch persons from server on mount 
-  // using axios here
+  // Load data from server on mount
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
       .catch(error => {
         console.error('Error fetching data:', error)
@@ -64,31 +64,30 @@ const App = () => {
   const handleFilterChange = (event) => setFilter(event.target.value)
 
   const handleSubmit = (event) => {
-  event.preventDefault()
+    event.preventDefault()
 
-  const nameExists = persons.some(
-    person => person.name.toLowerCase() === newName.toLowerCase()
-  )
+    const nameExists = persons.some(
+      person => person.name.toLowerCase() === newName.toLowerCase()
+    )
 
-  if (nameExists) {
-    alert(`${newName} is already added to the phonebook`)
-    return
+    if (nameExists) {
+      alert(`${newName} is already added to the phonebook`)
+      return
+    }
+
+    const newPerson = { name: newName, number: newNumber }
+
+    personService
+      .create(newPerson)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
+      .catch(error => {
+        console.error('Error adding person:', error)
+      })
   }
-
-  const newPerson = { name: newName, number: newNumber }
-
-  axios
-    .post('http://localhost:3001/persons', newPerson)
-    .then(response => {
-      setPersons(persons.concat(response.data))
-      setNewName('')
-      setNewNumber('')
-    })
-    .catch(error => {
-      console.error('Error saving to server:', error)
-    })
-}
-
 
   const personsToShow = persons.filter(person =>
     person.name.toLowerCase().includes(filter.toLowerCase())
