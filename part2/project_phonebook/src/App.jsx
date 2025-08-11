@@ -1,4 +1,3 @@
-// src/App.js
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
@@ -67,27 +66,44 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const nameExists = persons.some(
+    const existingPerson = persons.find(
       person => person.name.toLowerCase() === newName.toLowerCase()
     )
 
-    if (nameExists) {
-      alert(`${newName} is already added to the phonebook`)
-      return
-    }
-
     const newPerson = { name: newName, number: newNumber }
 
-    personService
-      .create(newPerson)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-      })
-      .catch(error => {
-        console.error('Error adding person:', error)
-      })
+    if (existingPerson) {
+      const confirmUpdate = window.confirm(
+        `${newName} is already added to the phonebook, replace the old number with a new one?`
+      )
+
+      if (confirmUpdate) {
+        personService
+          .update(existingPerson.id, newPerson)
+          .then(updatedPerson => {
+            setPersons(persons.map(p => p.id === existingPerson.id ? updatedPerson : p))
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch(error => {
+            alert(`Error updating ${newName}. It may have already been removed.`)
+            console.error('Error updating person:', error)
+            // Optionally remove the stale person from list
+            setPersons(persons.filter(p => p.id !== existingPerson.id))
+          })
+      }
+    } else {
+      personService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+        .catch(error => {
+          console.error('Error adding person:', error)
+        })
+    }
   }
 
   const handleDelete = (id, name) => {
