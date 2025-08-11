@@ -1,4 +1,5 @@
 import axios from 'axios'
+import './index.css'
 
 const promise = axios.get('http://localhost:3001/notes')
 console.log(promise)
