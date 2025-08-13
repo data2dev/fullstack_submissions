@@ -5,6 +5,7 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [query, setQuery] = useState('');
   const [filteredCountries, setFilteredCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
 
   useEffect(() => {
     axios
@@ -15,6 +16,7 @@ function App() {
   useEffect(() => {
     if (query.trim() === '') {
       setFilteredCountries([]);
+      setSelectedCountry(null);
       return;
     }
 
@@ -22,10 +24,15 @@ function App() {
       country.name.common.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredCountries(matches);
+    setSelectedCountry(null); // Reset selected country on new search
   }, [query, countries]);
 
   const handleChange = (e) => {
     setQuery(e.target.value);
+  };
+
+  const handleShow = (country) => {
+    setSelectedCountry(country);
   };
 
   const renderCountryDetails = (country) => {
@@ -60,12 +67,17 @@ function App() {
         {filteredCountries.length > 1 && filteredCountries.length <= 10 && (
           <ul>
             {filteredCountries.map((country) => (
-              <li key={country.cca3}>{country.name.common}</li>
+              <li key={country.cca3}>
+                {country.name.common}{' '}
+                <button onClick={() => handleShow(country)}>Show</button>
+              </li>
             ))}
           </ul>
         )}
 
         {filteredCountries.length === 1 && renderCountryDetails(filteredCountries[0])}
+
+        {selectedCountry && renderCountryDetails(selectedCountry)}
       </div>
     </div>
   );
