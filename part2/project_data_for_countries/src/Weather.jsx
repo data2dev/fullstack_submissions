@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API_KEY = 'f5f50729593a39b62aea8d1bf154adfe'; // Replace with your OpenWeatherMap API key
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
 const Weather = ({ capital, countryCode }) => {
   const [weather, setWeather] = useState(null);
