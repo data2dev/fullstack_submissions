@@ -34,4 +34,5 @@ const Weather = ({ capital, countryCode }) => {
   );
 };
 
+
 export default Weather;
