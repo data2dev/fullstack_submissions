@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Weather from './Weather';
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -36,21 +37,28 @@ function App() {
   };
 
   const renderCountryDetails = (country) => {
-    return (
-      <div>
-        <h2>{country.name.common}</h2>
-        <p><strong>Capital:</strong> {country.capital?.[0]}</p>
-        <p><strong>Area:</strong> {country.area} km²</p>
-        <h4>Languages:</h4>
-        <ul>
-          {Object.values(country.languages).map((lang) => (
-            <li key={lang}>{lang}</li>
-          ))}
-        </ul>
-        <img src={country.flags.svg} alt={`Flag of ${country.name.common}`} width="150" />
-      </div>
-    );
-  };
+  const capital = country.capital?.[0];
+
+  return (
+    <div>
+      <h2>{country.name.common}</h2>
+      <p><strong>Capital:</strong> {capital}</p>
+      <p><strong>Area:</strong> {country.area} km²</p>
+      <h4>Languages:</h4>
+      <ul>
+        {Object.values(country.languages).map((lang) => (
+          <li key={lang}>{lang}</li>
+        ))}
+      </ul>
+      <img src={country.flags.svg} alt={`Flag of ${country.name.common}`} width="150" />
+      
+      {capital && (
+  <Weather capital={capital} countryCode={country.cca2} />
+)}
+    </div>
+  );
+};
+
 
   return (
     <div style={{ padding: '1rem' }}>
